@@ -19,10 +19,10 @@ object AppModule {
         Room.databaseBuilder(
             context = contexto,
             klass = CashControlDb::class.java,
-            name = "DemoAP2.db"
+            name = "CashControl.db"
         ).fallbackToDestructiveMigration()
             .build()
 
     @Provides
-    fun provideGastoDao(ccdb: CashControlDb) = ccdb.GastoDao()
+    fun provideTransaccionDao(ccdb: CashControlDb) = ccdb.TransaccionDao()
 }
