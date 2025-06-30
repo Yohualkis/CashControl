@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CashControl</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="subtitulo_login">Introduzca sus credenciales para continuar</string>
+    <string name="placeholder_email">Email</string>
+    <string name="placeholder_contraseña">Contraseña</string>
+    <string name="btn_continuar">Continuar</string>
+    <string name="otra_opcion">o</string>
+    <string name="btn_continuar_google">Continuar con google</string>
+    <string name="copyright">© 2025 Cash Control | TE. Development</string>
+</resources>
