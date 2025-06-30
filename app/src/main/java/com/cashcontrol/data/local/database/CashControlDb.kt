@@ -4,13 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.cashcontrol.Converters
-import com.cashcontrol.data.local.dao.GastoDao
-import com.cashcontrol.data.local.entities.GastoEntity
+import com.cashcontrol.data.local.dao.TransaccionDao
+import com.cashcontrol.data.local.entities.TransaccionEntity
 import com.cashcontrol.data.local.entities.CategoriaEntity
 
 @Database(
     entities = [
-        GastoEntity::class,
+        TransaccionEntity::class,
         CategoriaEntity::class
     ],
     version = 1,
@@ -18,5 +18,5 @@ import com.cashcontrol.data.local.entities.CategoriaEntity
 )
 @TypeConverters(Converters::class)
 abstract class CashControlDb: RoomDatabase() {
-    abstract fun GastoDao(): GastoDao
+    abstract fun TransaccionDao(): TransaccionDao
 }
