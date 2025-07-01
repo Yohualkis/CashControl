@@ -17,8 +17,8 @@ import androidx.room.PrimaryKey
 )
 data class MetaEntity(
     @PrimaryKey
-    val metaId: Int?,
-    val usuarioId: Int?,
+    val metaId: Long?,
+    val usuarioId: Long?,
     val descripcion: String,
     val montoMeta: Double,
 )

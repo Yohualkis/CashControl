@@ -18,8 +18,8 @@ import java.util.Date
 )
 data class SugerenciaEntity(
     @PrimaryKey
-    val sugerenciaId: Int?,
-    val usuarioId: Int?,
+    val sugerenciaId: Long?,
+    val usuarioId: Long?,
     val estaVisto: Boolean = false,
     val fechaCreacion: Date = Date()
 )

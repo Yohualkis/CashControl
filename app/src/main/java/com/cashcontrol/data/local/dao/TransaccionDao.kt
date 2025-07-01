@@ -18,7 +18,7 @@ sealed interface TransaccionDao {
         where transaccionId = :id
         limit 1
     """)
-    suspend fun find(id: Int?): TransaccionEntity?
+    suspend fun find(id: Long?): TransaccionEntity?
 
     @Delete
     suspend fun delete(transaccion: TransaccionEntity)

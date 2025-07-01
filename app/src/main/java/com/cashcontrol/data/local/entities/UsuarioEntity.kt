@@ -7,7 +7,7 @@ import java.util.Date
 @Entity(tableName = "Usuarios")
 data class UsuarioEntity(
     @PrimaryKey(autoGenerate = true)
-    val usuarioId: Int?,
+    val usuarioId: Long?,
     val nombre: String,
     val email: String,
     val contrasena: String,

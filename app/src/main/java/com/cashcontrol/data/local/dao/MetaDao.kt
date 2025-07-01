@@ -33,7 +33,7 @@ sealed interface MetaDao {
         where usuarioId = :usuarioId
         """
     )
-    fun getMetasConDetalles(usuarioId: Int): Flow<List<MetaConDetalleEntity>>
+    fun getMetasConDetalles(usuarioId: Long?): Flow<List<MetaConDetalleEntity>>
 
     @Delete
     suspend fun deleteMeta(meta: MetaEntity)
