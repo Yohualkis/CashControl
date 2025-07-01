@@ -24,9 +24,9 @@ import java.util.Date
 )
 data class TransaccionEntity(
     @PrimaryKey
-    val transaccionId: Int?,
-    val usuarioId: Int?,
-    val categoriaId: Int?,
+    val transaccionId: Long?,
+    val usuarioId: Long?,
+    val categoriaId: Long?,
     val tipoTransaccion: String,
     val monto: Double,
     val fechaTransaccion: Date?,

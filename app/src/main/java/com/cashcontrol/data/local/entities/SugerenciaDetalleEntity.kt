@@ -7,9 +7,9 @@ import java.util.Date
 @Entity(tableName = "Sugerencias_Detalles")
 data class SugerenciaDetalleEntity(
     @PrimaryKey
-    val sugDetalleId: Int?,
-    val sugerenciaId: Int?,
-    val categoriaId: Int?,
+    val sugDetalleId: Long?,
+    val sugerenciaId: Long?,
+    val categoriaId: Long?,
     val descripcion: String,
     val tipoOperacion: String,
     val montoOperacion: Double,

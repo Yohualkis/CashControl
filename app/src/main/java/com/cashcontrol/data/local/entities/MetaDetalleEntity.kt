@@ -7,8 +7,8 @@ import java.util.Date
 @Entity(tableName = "Metas_Detalles")
 data class MetaDetalleEntity(
     @PrimaryKey
-    val metaDetalleId: Int?,
-    val metaId: Int?,
+    val metaDetalleId: Long?,
+    val metaId: Long?,
     val montoAporte: Double,
     val fechaAporte: Date = Date()
 )
