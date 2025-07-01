@@ -1,7 +1,6 @@
 package com.cashcontrol.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.cashcontrol.data.local.entities.SugerenciaConDetalleYCategoriaEntity
@@ -22,6 +21,6 @@ sealed interface SugerenciaDao {
         from Sugerencias
         where usuarioId = :usuarioId
     """)
-    fun getSugerenciaConDetallesYCategoria(usuarioId: Int?): Flow<List<SugerenciaConDetalleYCategoriaEntity>>
+    fun getSugerenciasConDetallesYCategoria(usuarioId: Int?): Flow<List<SugerenciaConDetalleYCategoriaEntity>>
 
 }
