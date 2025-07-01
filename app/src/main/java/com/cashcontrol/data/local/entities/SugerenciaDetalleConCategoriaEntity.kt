@@ -10,5 +10,5 @@ data class SugerenciaDetalleConCategoriaEntity(
         parentColumn = "categoriaId",
         entityColumn = "categoriaId"
     )
-    val categoria: CategoriaEntity
+    val categoria: CategoriaEntity?
 )
