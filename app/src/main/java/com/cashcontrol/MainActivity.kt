@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.navigation.compose.rememberNavController
 import com.cashcontrol.presentation.navigation.CashControlNavHost
 import com.cashcontrol.ui.theme.CashControlTheme
