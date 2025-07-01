@@ -27,5 +27,14 @@ object AppModule {
     fun provideTransaccionDao(ccdb: CashControlDb) = ccdb.TransaccionDao()
 
     @Provides
+    fun provideUsuarioDao(ccdb: CashControlDb) = ccdb.UsuarioDao()
+
+    @Provides
+    fun provideMetaDao(ccdb: CashControlDb) = ccdb.MetaDao()
+
+    @Provides
     fun provideCategoriaDao(ccdb: CashControlDb) = ccdb.CategoriaDao()
+
+    @Provides
+    fun provideSugerenciaDao(ccdb: CashControlDb) = ccdb.SugerenciaDao()
 }
