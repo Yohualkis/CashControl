@@ -21,6 +21,6 @@ sealed interface SugerenciaDao {
         from Sugerencias
         where usuarioId = :usuarioId
     """)
-    fun getSugerenciasConDetallesYCategoria(usuarioId: Int?): Flow<List<SugerenciaConDetalleYCategoriaEntity>>
+    fun getSugerenciasConDetallesYCategoria(usuarioId: Long?): Flow<List<SugerenciaConDetalleYCategoriaEntity>>
 
 }

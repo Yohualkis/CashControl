@@ -20,7 +20,7 @@ sealed interface CategoriaDao {
             limit 1
         """
     )
-    suspend fun find(id: Int?): CategoriaEntity?
+    suspend fun find(id: Long?): CategoriaEntity?
 
     @Delete
     suspend fun delete(categoria: CategoriaEntity)

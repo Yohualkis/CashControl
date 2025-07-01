@@ -16,7 +16,7 @@ sealed interface UsuarioDao {
         from Usuarios
         where usuarioId = :id
     """)
-    suspend fun getUsuarioById(id: Int?): UsuarioEntity?
+    suspend fun getUsuarioById(id: Long?): UsuarioEntity?
 
     @Query("""
         select *
