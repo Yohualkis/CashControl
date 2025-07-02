@@ -15,6 +15,7 @@ import com.cashcontrol.data.local.entities.SugerenciaDetalleEntity
 import com.cashcontrol.data.local.entities.SugerenciaEntity
 import com.cashcontrol.data.local.entities.TransaccionEntity
 import com.cashcontrol.data.local.entities.UsuarioEntity
+import com.cashcontrol.di.DateAdapter
 
 @Database(
     entities = [
@@ -29,7 +30,7 @@ import com.cashcontrol.data.local.entities.UsuarioEntity
     version = 1,
     exportSchema = false
 )
-@TypeConverters(Converters::class)
+@TypeConverters(DateAdapter::class)
 abstract class CashControlDb: RoomDatabase() {
     abstract fun TransaccionDao(): TransaccionDao
     abstract fun CategoriaDao(): CategoriaDao

@@ -1,9 +1,9 @@
-package com.cashcontrol.data.local.database
+package com.cashcontrol.di
 
 import androidx.room.TypeConverter
 import java.util.Date
 
-class Converters {
+class DateAdapter {
     @TypeConverter
     fun fromDate(date: Date?): Long? = date?.time
 
