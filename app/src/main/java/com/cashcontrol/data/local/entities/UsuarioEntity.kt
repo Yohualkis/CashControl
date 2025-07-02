@@ -11,5 +11,6 @@ data class UsuarioEntity(
     val nombre: String,
     val email: String,
     val contrasena: String,
+    val fotoPath: String?,
     val fechaRegistro: Date
 )
