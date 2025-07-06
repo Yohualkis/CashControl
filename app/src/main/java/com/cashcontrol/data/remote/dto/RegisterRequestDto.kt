@@ -4,6 +4,9 @@ import com.squareup.moshi.Json
 import java.util.Date
 
 data class RegisterRequestDto(
+    @Json(name = "usuarioId")
+    val usuarioId: Long,
+
     @Json(name = "nombre")
     val nombre: String,
 
@@ -12,6 +15,9 @@ data class RegisterRequestDto(
 
     @Json(name = "contrasena")
     val contrasena: String,
+
+    @Json(name = "fotoPath")
+    val fotoPath: String? = null,
 
     @Json(name = "fechaRegistro")
     val fechaRegistro: Date
