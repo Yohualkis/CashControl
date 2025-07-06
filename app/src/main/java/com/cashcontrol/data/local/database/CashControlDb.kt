@@ -27,7 +27,7 @@ import com.cashcontrol.di.DateAdapter
         SugerenciaEntity::class,
         SugerenciaDetalleEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateAdapter::class)
