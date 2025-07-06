@@ -2,7 +2,6 @@ package com.cashcontrol.data.remote.api
 
 import com.cashcontrol.data.remote.dto.AutorizacionResponseDto
 import com.cashcontrol.data.remote.dto.LoginRequestDto
-import com.cashcontrol.data.remote.dto.RegisterRequestDto
 import com.cashcontrol.data.remote.dto.UsuarioDto
 import retrofit2.http.Body
 import retrofit2.http.POST
