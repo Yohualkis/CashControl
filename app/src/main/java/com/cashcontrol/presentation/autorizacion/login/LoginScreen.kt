@@ -1,7 +1,9 @@
-package com.cashcontrol.presentation.signInOrOut
+package com.cashcontrol.presentation.autorizacion.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +16,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Button
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ButtonDefaults
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.CircularProgressIndicator
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Divider
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -40,6 +45,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,16 +61,36 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashcontrol.R
+import com.cashcontrol.presentation.composables.MensajeDeErrorGenerico
 
 @Composable
 fun LoginScreen(
-    nav: NavHostController
+    viewmodel: LoginViewmodel = hiltViewModel(),
+    goToDash: () -> Unit,
+    goToRegister: () -> Unit,
+){
+    val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(uiState.usuario) {
+        if(uiState.usuario != null){
+            goToDash()
+        }
+    }
+    LoginScreenView(
+        uiState = uiState,
+        onEvent = viewmodel::onEvent,
+        goToDash = goToDash
+    )
+}
+
+@Composable
+fun LoginScreenView(
+    uiState: LoginUiState,
+    onEvent: (LoginEvent) -> Unit,
+    goToDash: () -> Unit,
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var showPass by remember { mutableStateOf(false) }
 
     Column(
@@ -98,6 +124,10 @@ fun LoginScreen(
                 .fillMaxHeight()
                 .background(
                     MaterialTheme.colorScheme.surfaceDim
+                )
+                .scrollable(
+                    orientation = Orientation.Horizontal,
+                    state = rememberScrollState(),
                 ),
             verticalArrangement = Arrangement.spacedBy(48.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -123,8 +153,8 @@ fun LoginScreen(
 
                 // Email
                 OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
+                    value = uiState.email ?: "",
+                    onValueChange = { onEvent(LoginEvent.EmailChange(it)) },
                     label = { Text(stringResource(R.string.placeholder_email)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -134,15 +164,16 @@ fun LoginScreen(
                             cursorColor = MaterialTheme.colorScheme.primary,
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            textColor = MaterialTheme.colorScheme.scrim,
+                            textColor = MaterialTheme.colorScheme.onSurface,
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             errorCursorColor = MaterialTheme.colorScheme.error,
                             errorIndicatorColor = MaterialTheme.colorScheme.error,
-                            leadingIconColor = MaterialTheme.colorScheme.outline,
+                            leadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             errorLeadingIconColor = MaterialTheme.colorScheme.error,
                             errorTrailingIconColor = MaterialTheme.colorScheme.error,
                             errorLabelColor = MaterialTheme.colorScheme.error,
-                            placeholderColor = MaterialTheme.colorScheme.outline,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
                     leadingIcon = {
@@ -150,31 +181,37 @@ fun LoginScreen(
                             imageVector = Icons.Default.Email,
                             contentDescription = "Icono de email"
                         )
-                    }
+                    },
+                    isError = !uiState.emailErrorMessage.isNullOrBlank(),
                 )
+                MensajeDeErrorGenerico(uiState.emailErrorMessage)
 
                 // Password
                 OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
+                    value = uiState.contrasena ?: "",
+                    onValueChange = { onEvent(LoginEvent.ContrasenaChange(it)) },
                     label = { Text(stringResource(R.string.placeholder_contraseña)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                     shape = MaterialTheme.shapes.medium,
                     colors = TextFieldDefaults.run {
                         textFieldColors(
                             cursorColor = MaterialTheme.colorScheme.primary,
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            textColor = MaterialTheme.colorScheme.scrim,
+                            textColor = MaterialTheme.colorScheme.onSurface,
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             errorCursorColor = MaterialTheme.colorScheme.error,
                             errorIndicatorColor = MaterialTheme.colorScheme.error,
-                            leadingIconColor = MaterialTheme.colorScheme.outline,
+                            leadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                             errorLeadingIconColor = MaterialTheme.colorScheme.error,
                             errorTrailingIconColor = MaterialTheme.colorScheme.error,
                             errorLabelColor = MaterialTheme.colorScheme.error,
-                            placeholderColor = MaterialTheme.colorScheme.outline,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     },
                     leadingIcon = {
@@ -191,21 +228,38 @@ fun LoginScreen(
                         }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    isError = !uiState.contrasenaErrorMessage.isNullOrBlank(),
                 )
+
+                MensajeDeErrorGenerico(uiState.contrasenaErrorMessage)
+
+                MensajeDeErrorGenerico(uiState.errorGeneral)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Botón Continuar
                 Button(
-                    onClick = { /* acción de login */ },
+                    onClick = {
+                        onEvent(LoginEvent.Login)
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                         backgroundColor = MaterialTheme.colorScheme.primary,
                     ),
                     shape = MaterialTheme.shapes.small,
+                    enabled = !uiState.isLoading
                 ) {
-                    Text(stringResource(R.string.btn_continuar), color = Color.White)
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier
+                                .size(20.dp)
+                        )
+                    } else
+                        Text(text = stringResource(R.string.btn_continuar))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -242,8 +296,8 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.small,
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = MaterialTheme.colorScheme.primary,
-                        backgroundColor = MaterialTheme.colorScheme.surface
+                        contentColor = MaterialTheme.colorScheme.inverseSurface,
+                        backgroundColor = MaterialTheme.colorScheme.inverseOnSurface
                     )
                 ) {
                     Icon(
@@ -272,7 +326,9 @@ fun LoginScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewLogin() {
-    LoginScreen(
-        nav = rememberNavController()
+    LoginScreenView(
+        uiState = LoginUiState(),
+        onEvent = {},
+        goToDash = {}
     )
 }

@@ -10,6 +10,6 @@ data class UsuarioEntity(
     val usuarioId: Long?,
     val nombre: String,
     val email: String,
-    val contrasena: String,
-    val fechaRegistro: Date
+    val fotoPath: String?,
+    val fechaRegistro: Date?
 )

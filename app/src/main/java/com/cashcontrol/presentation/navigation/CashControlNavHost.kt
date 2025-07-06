@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.cashcontrol.presentation.signInOrOut.LoginScreen
+import com.cashcontrol.presentation.autorizacion.login.LoginScreen
 
 @Composable
 fun CashControlNavHost(
@@ -16,7 +16,10 @@ fun CashControlNavHost(
     ) {
         // Login
         composable<Screen.Login> {
-            LoginScreen(nav = navHostController)
+            LoginScreen(
+                goToDash = {},
+                goToRegister = {}
+            )
         }
     }
 }
