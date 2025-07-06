@@ -20,12 +20,13 @@ import javax.inject.Singleton
 @Module
 object ApiModule {
     // OJO: Cuando la api se hostee favor poner la url aqui
-    const val BASE_URL = "http://localhost:5050/"
+    const val BASE_URL = "https://cashcontrolapi.onrender.com/"
 
     @Provides
     @Singleton
     fun providesMoshi(): Moshi =
         Moshi.Builder()
+            .add(DateAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 
@@ -57,7 +58,7 @@ object ApiModule {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(providesMoshi()))
             .build()
     }
 
