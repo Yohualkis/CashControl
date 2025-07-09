@@ -3,8 +3,10 @@ package com.cashcontrol.presentation.autorizacion.login
 import android.util.Patterns.EMAIL_ADDRESS
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cashcontrol.data.SessionManager
 import com.cashcontrol.data.remote.Resource
 import com.cashcontrol.data.repositories.AutorizacionRepository
+import com.cashcontrol.session.Sesion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,12 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     private val autorizacionRepository: AutorizacionRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-
+        onCheckSesionActual()
     }
 
     fun onEvent(event: LoginEvent) {
@@ -33,6 +37,36 @@ class LoginViewmodel @Inject constructor(
             LoginEvent.LimpiarErrores -> limpiarErrores()
             LoginEvent.LimpiarClaveYErrorContrasena -> limpiarCampoYErrorContrasena()
             LoginEvent.Login -> onLogin()
+            LoginEvent.CheckSesionActual -> onCheckSesionActual()
+            LoginEvent.Logout -> onLogout()
+        }
+    }
+
+    private fun onLogout() {
+        viewModelScope.launch {
+            autorizacionRepository.logout()
+            _uiState.update {
+                it.copy(
+                    isLoggedIn = false,
+                    usuario = null,
+                    email = "",
+                    contrasena = ""
+                )
+            }
+        }
+    }
+
+    private fun onCheckSesionActual() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            val user = autorizacionRepository.getUser()
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isLoggedIn = user != null,
+                    usuario = user
+                )
+            }
         }
     }
 
@@ -42,7 +76,7 @@ class LoginViewmodel @Inject constructor(
                 return@launch
 
             autorizacionRepository.login(
-                email = _uiState.value.email ?: "",
+                email = _uiState.value.email?.lowercase() ?: "",
                 password = _uiState.value.contrasena ?: ""
             ).collectLatest { result ->
                 when (result) {
@@ -65,15 +99,13 @@ class LoginViewmodel @Inject constructor(
 
                     is Resource.Success -> {
                         limpiarErrores()
+                        Sesion.token = result.data?.token
+                        sessionManager.saveToken(Sesion.token)
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorGeneral = "Entraste!",
-                                emailErrorMessage = "",
-                                contrasenaErrorMessage = "",
-                                usuario = result.data,
-                                email = "",
-                                contrasena = ""
+                                usuario = result.data?.usuario,
+                                isLoggedIn = true
                             )
                         }
                     }
