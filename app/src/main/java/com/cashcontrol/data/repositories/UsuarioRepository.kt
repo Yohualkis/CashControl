@@ -7,7 +7,7 @@ import javax.inject.Inject
 class UsuarioRepository @Inject constructor(
     private val usuarioDao: UsuarioDao
 ) {
-    suspend fun save(user: UsuarioEntity) = usuarioDao.save(user)
-    suspend fun getUsuarioById(id: Long?) = usuarioDao.getUsuarioById(id)
-    suspend fun getUsuarioByEmail(email: String) = usuarioDao.getUsuarioByEmail(email)
+    suspend fun saveUser(user: UsuarioEntity) = usuarioDao.saveUser(user)
+    suspend fun deleteUser() = usuarioDao.deleteUser()
+    suspend fun getUser() = usuarioDao.getUser()
 }
