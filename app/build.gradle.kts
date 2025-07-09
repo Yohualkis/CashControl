@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.cashcontrol"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -59,8 +59,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // MPAndroidChart
-    implementation (libs.mpandroidchart)
+    // Datastore Preference - para manejar la sesion del usuario
+    implementation(libs.androidx.datastore.preferences)
+
+    // YCharts
+    implementation(libs.ycharts)
 
     // Iconos
     implementation(libs.androidx.material.icons.extended)
