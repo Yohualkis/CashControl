@@ -8,6 +8,7 @@ data class LoginUiState(
     val emailErrorMessage: String? = "",
     val contrasenaErrorMessage: String? = "",
     val isLoading: Boolean = false,
-    val errorGeneral: String? = "",
+    val isLoggedIn: Boolean = false,
+    val errorGeneral: String? = null,
     val usuario: UsuarioEntity? = null
 )
