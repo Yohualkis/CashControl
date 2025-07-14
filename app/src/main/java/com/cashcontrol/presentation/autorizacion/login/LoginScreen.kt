@@ -1,5 +1,6 @@
 package com.cashcontrol.presentation.autorizacion.login
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -73,15 +74,19 @@ fun LoginScreen(
     goToRegister: () -> Unit,
 ){
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(uiState.usuario) {
-        if(uiState.usuario != null){
+    LaunchedEffect(uiState.isLoggedIn) {
+        if(uiState.isLoggedIn){
             goToDash()
         }
     }
+
+    BackHandler(enabled = uiState.isLoggedIn) {
+        goToDash()
+    }
+
     LoginScreenView(
         uiState = uiState,
         onEvent = viewmodel::onEvent,
-        goToDash = goToDash
     )
 }
 
@@ -89,7 +94,6 @@ fun LoginScreen(
 fun LoginScreenView(
     uiState: LoginUiState,
     onEvent: (LoginEvent) -> Unit,
-    goToDash: () -> Unit,
 ) {
     var showPass by remember { mutableStateOf(false) }
 
@@ -329,6 +333,5 @@ fun PreviewLogin() {
     LoginScreenView(
         uiState = LoginUiState(),
         onEvent = {},
-        goToDash = {}
     )
 }
