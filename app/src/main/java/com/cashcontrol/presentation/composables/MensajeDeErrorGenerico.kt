@@ -12,12 +12,13 @@ import androidx.compose.ui.unit.dp
 fun MensajeDeErrorGenerico(
     errorMessage: String?,
 ) {
-    AnimatedVisibility(visible = errorMessage != null) {
+    AnimatedVisibility(visible = !errorMessage.isNullOrBlank()) {
         Text(
             text = errorMessage ?: "",
             color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 2.dp)
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .padding(top = 2.dp)
         )
     }
 }
