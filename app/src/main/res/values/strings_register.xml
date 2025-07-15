@@ -1,0 +1,12 @@
+<resources>
+    <string name="register">Registrarse</string>
+    <string name="subtitulo_register">Introduzca sus credenciales para continuar</string>
+    <string name="placeholder_nombre_register">Nombre</string>
+    <string name="placeholder_email_register">Email</string>
+    <string name="placeholder_contraseña_register">Contraseña</string>
+    <string name="placeholder_confirmar_contraseña_register">Confirmar contraseña</string>
+    <string name="btn_registrarse">Continuar</string>
+    <string name="otra_opcion_register">o</string>
+    <string name="btn_continuar_google_register">Continuar con google</string>
+    <string name="volver_login">¿Ya tienes cuenta? Accede aquí</string>
+</resources>
