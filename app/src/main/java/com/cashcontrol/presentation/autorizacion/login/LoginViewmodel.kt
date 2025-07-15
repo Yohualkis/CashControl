@@ -4,6 +4,7 @@ import android.util.Patterns.EMAIL_ADDRESS
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cashcontrol.data.SessionManager
+import com.cashcontrol.data.mappers.toEntity
 import com.cashcontrol.data.remote.Resource
 import com.cashcontrol.data.repositories.AutorizacionRepository
 import com.cashcontrol.session.Sesion
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     private val autorizacionRepository: AutorizacionRepository,
@@ -104,7 +104,7 @@ class LoginViewmodel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                usuario = result.data?.usuario,
+                                usuario = result.data?.usuario?.toEntity(),
                                 isLoggedIn = true
                             )
                         }
@@ -121,7 +121,7 @@ class LoginViewmodel @Inject constructor(
                 it.copy(emailErrorMessage = "Este campo es obligatorio *")
             }
             errorEncontrado = true
-        } else if (!EMAIL_ADDRESS.matcher(_uiState.value.email).matches()) {
+        } else if (!EMAIL_ADDRESS.matcher(_uiState.value.email ?: "").matches()) {
             _uiState.update {
                 it.copy(emailErrorMessage = "Ingrese un email válido *")
             }
@@ -135,6 +135,7 @@ class LoginViewmodel @Inject constructor(
         }
         return errorEncontrado
     }
+
     private fun onContrasenaChange(contrasena: String) {
         viewModelScope.launch {
             _uiState.update {
