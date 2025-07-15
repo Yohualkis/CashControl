@@ -3,12 +3,11 @@ package com.cashcontrol.presentation.autorizacion.login
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,34 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Button
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ButtonDefaults
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.CircularProgressIndicator
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.Divider
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.Icon
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.IconButton
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.OutlinedButton
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.OutlinedTextField
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,28 +32,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashcontrol.R
 import com.cashcontrol.presentation.composables.MensajeDeErrorGenerico
+import com.cashcontrol.presentation.composables.TextfieldGenerico
+import com.cashcontrol.presentation.composables.TextfieldPassword
 
 @Composable
 fun LoginScreen(
     viewmodel: LoginViewmodel = hiltViewModel(),
     goToDash: () -> Unit,
     goToRegister: () -> Unit,
-){
+) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(uiState.isLoggedIn) {
-        if(uiState.isLoggedIn){
+        if (uiState.isLoggedIn) {
             goToDash()
         }
     }
@@ -87,6 +65,7 @@ fun LoginScreen(
     LoginScreenView(
         uiState = uiState,
         onEvent = viewmodel::onEvent,
+        goToRegister = goToRegister,
     )
 }
 
@@ -94,12 +73,17 @@ fun LoginScreen(
 fun LoginScreenView(
     uiState: LoginUiState,
     onEvent: (LoginEvent) -> Unit,
+    goToRegister: () -> Unit,
 ) {
     var showPass by remember { mutableStateOf(false) }
-
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { focusManager.clearFocus() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
@@ -128,10 +112,6 @@ fun LoginScreenView(
                 .fillMaxHeight()
                 .background(
                     MaterialTheme.colorScheme.surfaceDim
-                )
-                .scrollable(
-                    orientation = Orientation.Horizontal,
-                    state = rememberScrollState(),
                 ),
             verticalArrangement = Arrangement.spacedBy(48.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -156,94 +136,35 @@ fun LoginScreenView(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Email
-                OutlinedTextField(
+                TextfieldGenerico(
                     value = uiState.email ?: "",
                     onValueChange = { onEvent(LoginEvent.EmailChange(it)) },
-                    label = { Text(stringResource(R.string.placeholder_email)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium,
-                    colors = TextFieldDefaults.run {
-                        textFieldColors(
-                            cursorColor = MaterialTheme.colorScheme.primary,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            textColor = MaterialTheme.colorScheme.onSurface,
-                            backgroundColor = MaterialTheme.colorScheme.surface,
-                            errorCursorColor = MaterialTheme.colorScheme.error,
-                            errorIndicatorColor = MaterialTheme.colorScheme.error,
-                            leadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                            errorTrailingIconColor = MaterialTheme.colorScheme.error,
-                            errorLabelColor = MaterialTheme.colorScheme.error,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = "Icono de email"
-                        )
-                    },
-                    isError = !uiState.emailErrorMessage.isNullOrBlank(),
+                    labelResource = R.string.placeholder_email,
+                    icono = Icons.Default.Email,
+                    errorMessagePass = uiState.emailErrorMessage
                 )
-                MensajeDeErrorGenerico(uiState.emailErrorMessage)
+                Box(Modifier.fillMaxWidth()){
+                    MensajeDeErrorGenerico(uiState.emailErrorMessage)
+                }
 
                 // Password
-                OutlinedTextField(
+                TextfieldPassword(
                     value = uiState.contrasena ?: "",
                     onValueChange = { onEvent(LoginEvent.ContrasenaChange(it)) },
-                    label = { Text(stringResource(R.string.placeholder_contraseña)) },
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    shape = MaterialTheme.shapes.medium,
-                    colors = TextFieldDefaults.run {
-                        textFieldColors(
-                            cursorColor = MaterialTheme.colorScheme.primary,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            textColor = MaterialTheme.colorScheme.onSurface,
-                            backgroundColor = MaterialTheme.colorScheme.surface,
-                            errorCursorColor = MaterialTheme.colorScheme.error,
-                            errorIndicatorColor = MaterialTheme.colorScheme.error,
-                            leadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                            errorTrailingIconColor = MaterialTheme.colorScheme.error,
-                            errorLabelColor = MaterialTheme.colorScheme.error,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            trailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Icono de clave"
-                        )
-                    },
-                    visualTransformation = if (showPass) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        val icon = if (showPass) Icons.Default.VisibilityOff else Icons.Default.Visibility
-                        IconButton(onClick = { showPass = !showPass }) {
-                            Icon(icon, contentDescription = null)
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    isError = !uiState.contrasenaErrorMessage.isNullOrBlank(),
+                    labelResource = R.string.placeholder_contraseña,
+                    icono = Icons.Default.Lock,
+                    showPass = showPass,
+                    onTogglePasswordVisibility = { showPass = !showPass },
+                    errorMessagePass = uiState.contrasenaErrorMessage
                 )
-
-                MensajeDeErrorGenerico(uiState.contrasenaErrorMessage)
-
-                MensajeDeErrorGenerico(uiState.errorGeneral)
-
-                Spacer(modifier = Modifier.height(16.dp))
+                Box(Modifier.fillMaxWidth()) {
+                    MensajeDeErrorGenerico(uiState.contrasenaErrorMessage)
+                }
 
                 // Botón Continuar
                 Button(
                     onClick = {
+                        focusManager.clearFocus()
                         onEvent(LoginEvent.Login)
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -265,64 +186,28 @@ fun LoginScreenView(
                     } else
                         Text(text = stringResource(R.string.btn_continuar))
                 }
-
+                MensajeDeErrorGenerico(uiState.errorGeneral)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Separador
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Divider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(1.dp),
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                    Text(
-                        text = stringResource(R.string.otra_opcion),
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                    Divider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(1.dp),
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Google Sign-In Button
-                OutlinedButton(
-                    onClick = { /* login con Google */ },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.small,
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = MaterialTheme.colorScheme.inverseSurface,
-                        backgroundColor = MaterialTheme.colorScheme.inverseOnSurface
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.google_logo32), // usa el nombre correcto
-                        contentDescription = "Google",
-                        modifier = Modifier.size(18.dp),
-                        tint = Color.Unspecified
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.btn_continuar_google))
-                }
-
+                Text(
+                    text = stringResource(R.string.registrarse),
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable {
+                            focusManager.clearFocus()
+                            goToRegister()
+                        },
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+                // Footer
+                Text(
+                    text = stringResource(R.string.copyright),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = MaterialTheme.colorScheme.outline
+                )
             }
-
-            // Footer
-            Text(
-                text = stringResource(R.string.copyright),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                color = MaterialTheme.colorScheme.outline
-            )
         }
     }
 }
@@ -333,5 +218,6 @@ fun PreviewLogin() {
     LoginScreenView(
         uiState = LoginUiState(),
         onEvent = {},
+        goToRegister = {},
     )
 }
