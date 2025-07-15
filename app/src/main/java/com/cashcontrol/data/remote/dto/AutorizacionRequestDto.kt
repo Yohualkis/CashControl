@@ -2,10 +2,10 @@ package com.cashcontrol.data.remote.dto
 
 import com.squareup.moshi.Json
 
-data class LoginRequestDto(
+data class AutorizacionRequestDto(
     @Json(name = "email")
     val email: String,
 
-    @Json(name = "contrasena")
+    @Json(name = "password")
     val contrasena: String
 )
