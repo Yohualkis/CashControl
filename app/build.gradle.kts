@@ -59,6 +59,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Accompanist FlowLayout --
+    // se pueden crear layouts con Row y Column pero con elementos
+    // que saltan automáticamente a la siguiente línea/fila cuando no hay espacio
+    implementation(libs.accompanist.flowlayout)
+
     // Datastore Preference - para manejar la sesion del usuario
     implementation(libs.androidx.datastore.preferences)
 

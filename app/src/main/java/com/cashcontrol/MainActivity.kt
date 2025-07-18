@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CashControlTheme {
                 CashControlNavHost(
-                    navHostController = rememberNavController()
+                    nav = rememberNavController()
                 )
             }
         }

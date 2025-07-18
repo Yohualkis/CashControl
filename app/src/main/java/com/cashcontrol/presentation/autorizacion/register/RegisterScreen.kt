@@ -1,9 +1,10 @@
-package com.cashcontrol.presentation.autorizacion.login
+package com.cashcontrol.presentation.autorizacion.register
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -22,9 +24,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,39 +43,30 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashcontrol.R
+import com.cashcontrol.presentation.autorizacion.login.LoginEvent
 import com.cashcontrol.presentation.composables.MensajeDeErrorGenerico
 import com.cashcontrol.presentation.composables.TextfieldGenerico
 import com.cashcontrol.presentation.composables.TextfieldPassword
 
 @Composable
-fun LoginScreen(
-    viewmodel: LoginViewmodel = hiltViewModel(),
-    goToDash: () -> Unit,
-    goToRegister: () -> Unit,
+fun RegisterScreen(
+    viewmodel: RegisterViewModel = hiltViewModel(),
+    goToLogin: () -> Unit,
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(uiState.isLoggedIn) {
-        if (uiState.isLoggedIn) {
-            goToDash()
-        }
-    }
 
-    BackHandler(enabled = uiState.isLoggedIn) {
-        goToDash()
-    }
-
-    LoginScreenView(
+    RegisterScreenView(
         uiState = uiState,
         onEvent = viewmodel::onEvent,
-        goToRegister = goToRegister,
+        goToLogin = goToLogin,
     )
 }
 
 @Composable
-fun LoginScreenView(
-    uiState: LoginUiState,
-    onEvent: (LoginEvent) -> Unit,
-    goToRegister: () -> Unit,
+fun RegisterScreenView(
+    uiState: RegisterUiState,
+    onEvent: (RegisterEvent) -> Unit,
+    goToLogin: () -> Unit,
 ) {
     var showPass by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -83,7 +76,9 @@ fun LoginScreenView(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) { focusManager.clearFocus() },
+            ) {
+                focusManager.clearFocus()
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
@@ -112,6 +107,10 @@ fun LoginScreenView(
                 .fillMaxHeight()
                 .background(
                     MaterialTheme.colorScheme.surfaceDim
+                )
+                .scrollable(
+                    orientation = Orientation.Horizontal,
+                    state = rememberScrollState(),
                 ),
             verticalArrangement = Arrangement.spacedBy(48.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -122,50 +121,77 @@ fun LoginScreenView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = stringResource(R.string.login),
+                    text = stringResource(R.string.register),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-                    text = stringResource(R.string.subtitulo_login),
+                    text = stringResource(R.string.subtitulo_register),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Nombre
+                TextfieldGenerico(
+                    value = uiState.nombre ?: "",
+                    onValueChange = { onEvent(RegisterEvent.NombreChange(it)) },
+                    labelResource = R.string.placeholder_nombre_register,
+                    icono = Icons.Default.Person,
+                    errorMessagePass = uiState.errorNombre
+                )
+                Box(Modifier.fillMaxWidth()) {
+                    MensajeDeErrorGenerico(uiState.errorNombre)
+                }
+
                 // Email
                 TextfieldGenerico(
                     value = uiState.email ?: "",
-                    onValueChange = { onEvent(LoginEvent.EmailChange(it)) },
-                    labelResource = R.string.placeholder_email,
+                    onValueChange = { onEvent(RegisterEvent.EmailChange(it)) },
+                    labelResource = R.string.placeholder_email_register,
                     icono = Icons.Default.Email,
-                    errorMessagePass = uiState.emailErrorMessage
+                    errorMessagePass = uiState.errorEmail
                 )
-                Box(Modifier.fillMaxWidth()){
-                    MensajeDeErrorGenerico(uiState.emailErrorMessage)
+                Box(Modifier.fillMaxWidth()) {
+                    MensajeDeErrorGenerico(uiState.errorEmail)
                 }
 
                 // Password
                 TextfieldPassword(
-                    value = uiState.contrasena ?: "",
-                    onValueChange = { onEvent(LoginEvent.ContrasenaChange(it)) },
+                    value = uiState.password ?: "",
+                    onValueChange = { onEvent(RegisterEvent.PasswordChange(it)) },
                     labelResource = R.string.placeholder_contraseña,
                     icono = Icons.Default.Lock,
                     showPass = showPass,
                     onTogglePasswordVisibility = { showPass = !showPass },
-                    errorMessagePass = uiState.contrasenaErrorMessage
+                    errorMessagePass = uiState.errorPassword
                 )
                 Box(Modifier.fillMaxWidth()) {
-                    MensajeDeErrorGenerico(uiState.contrasenaErrorMessage)
+                    MensajeDeErrorGenerico(uiState.errorPassword)
                 }
 
+                // Confirmar Password
+                TextfieldPassword(
+                    value = uiState.confirmPassword ?: "",
+                    onValueChange = { onEvent(RegisterEvent.ConfirmPasswordChange(it)) },
+                    labelResource = R.string.placeholder_confirmar_contraseña_register,
+                    icono = Icons.Default.Lock,
+                    showPass = showPass,
+                    onTogglePasswordVisibility = { showPass = !showPass },
+                    errorMessagePass = uiState.errorConfirmPassword
+                )
+                Box(Modifier.fillMaxWidth()) {
+                    MensajeDeErrorGenerico(uiState.errorConfirmPassword)
+                }
+
+                // Botón Continuar
                 // Botón Continuar
                 Button(
                     onClick = {
                         focusManager.clearFocus()
-                        onEvent(LoginEvent.Login)
+                        onEvent(RegisterEvent.Register)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -187,16 +213,17 @@ fun LoginScreenView(
                         Text(text = stringResource(R.string.btn_continuar))
                 }
                 MensajeDeErrorGenerico(uiState.errorGeneral)
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = stringResource(R.string.registrarse),
+                    text = stringResource(R.string.volver_login),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .clickable {
                             focusManager.clearFocus()
-                            goToRegister()
+                            goToLogin()
                         },
                     color = MaterialTheme.colorScheme.tertiary,
                 )
@@ -214,10 +241,10 @@ fun LoginScreenView(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewLogin() {
-    LoginScreenView(
-        uiState = LoginUiState(),
+fun PreviewRegister() {
+    RegisterScreenView(
+        uiState = RegisterUiState(),
         onEvent = {},
-        goToRegister = {},
+        goToLogin = {},
     )
 }
