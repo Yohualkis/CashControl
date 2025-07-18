@@ -9,13 +9,12 @@ import com.cashcontrol.data.remote.dto.AutorizacionResponseDto
 import com.cashcontrol.data.remote.dto.UsuarioRequestDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okio.IOException
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class AutorizacionRepository @Inject constructor(
     private val remote: RemoteDataSource,
-    private val local: UsuarioRepository,
+    private val userRepo: UsuarioRepository,
 ) {
     fun login(email: String, password: String): Flow<Resource<AutorizacionResponseDto>> {
         return flow {
@@ -23,7 +22,7 @@ class AutorizacionRepository @Inject constructor(
             try {
                 val response = remote.login(AutorizacionRequestDto(email, password))
                 val usuarioLocal = response.usuario.toEntity()
-                local.saveUser(usuarioLocal)
+                userRepo.saveUser(usuarioLocal)
                 emit(Resource.Success(response))
             } catch (e: HttpException) {
                 emit(Resource.Error("Email o contraseña incorrectos"))
@@ -33,8 +32,8 @@ class AutorizacionRepository @Inject constructor(
         }
     }
 
-    suspend fun logout() = local.deleteUser()
-    suspend fun getUser() = local.getUser()
+    suspend fun logout() = userRepo.deleteUser()
+    suspend fun getUser() = userRepo.getUser()
 
     fun register(usuarioRequestDto: UsuarioRequestDto): Flow<Resource<UsuarioEntity>> {
         return flow {
