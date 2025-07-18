@@ -48,7 +48,6 @@ fun CashControlNavHost(
         // DASHBOARD
         composable<Screen.Dashboard> {
             DashboardScreen(
-                nav = nav,
                 goToDashboard = {},
                 goToSugerencias = {}
             )
