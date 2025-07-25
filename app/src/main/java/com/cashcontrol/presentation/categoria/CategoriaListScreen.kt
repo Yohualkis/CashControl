@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +42,7 @@ fun CategoriaListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ListadoCategoria(
         uiState = uiState,
-        goBack = goBack,
+        goBack = { goBack },
         goToCategoria = { goToCategoria(it) },
         onDeleteClick = { viewModel.onEvent(CategoriaEvent.Delete(it)) },
         verTiposCategoria = { viewModel.getCategoriasPorTipo(it) },
@@ -55,10 +59,10 @@ fun ListadoCategoria(
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceDim,
-         topBar= {
+        topBar = {
             CashControlAppBar(
                 icono = Icons.AutoMirrored.Filled.ArrowBack,
-                onActionPressed = goBack
+                onActionPressed = { goBack }
             )
         },
         floatingActionButton = {
@@ -74,7 +78,8 @@ fun ListadoCategoria(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
         ) {
             val opciones = listOf("Gastos", "Ingresos")
@@ -101,12 +106,30 @@ fun ListadoCategoria(
                 contentPadding = PaddingValues(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(uiState.listaCategoria) {
-                    CategoriaCard(
-                        descripcion = it.descripcion,
-                        onEditarClick = { goToCategoria(it.categoriaId) },
-                        onEliminarClick = { onDeleteClick(it) }
-                    )
+                if (uiState.isLoading) {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 256.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator()
+                            Text(
+                                text = "Cargando...",
+                                color = MaterialTheme.colorScheme.outline,
+                            )
+                        }
+                    }
+                } else {
+                    items(uiState.listaCategoria) {
+                        CategoriaCard(
+                            descripcion = it.descripcion,
+                            onEditarClick = { goToCategoria(it.categoriaId) },
+                            onEliminarClick = { onDeleteClick(it) }
+                        )
+                    }
                 }
             }
         }
