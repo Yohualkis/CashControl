@@ -20,8 +20,8 @@ import javax.inject.Singleton
 @Module
 object ApiModule {
 //    const val BASE_URL = "https://cashcontrolapi.onrender.com/"
-    const val BASE_URL = "http://10.0.2.2:8080/"
-//    const val BASE_URL = "http://10.0.0.4:8080/"
+//    const val BASE_URL = "http://10.0.2.2:8080/"
+    const val BASE_URL = "http://10.0.0.135:8080/"
 
     @Provides
     @Singleton
