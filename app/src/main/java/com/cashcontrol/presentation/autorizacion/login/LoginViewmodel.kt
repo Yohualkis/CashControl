@@ -3,11 +3,9 @@ package com.cashcontrol.presentation.autorizacion.login
 import android.util.Patterns.EMAIL_ADDRESS
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cashcontrol.data.SessionManager
 import com.cashcontrol.data.mappers.toEntity
 import com.cashcontrol.data.remote.Resource
 import com.cashcontrol.data.repositories.AutorizacionRepository
-import com.cashcontrol.session.Sesion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     private val autorizacionRepository: AutorizacionRepository,
-    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -99,12 +96,10 @@ class LoginViewmodel @Inject constructor(
 
                     is Resource.Success -> {
                         limpiarErrores()
-                        Sesion.token = result.data?.token
-                        sessionManager.saveToken(Sesion.token)
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                usuario = result.data?.usuario?.toEntity(),
+                                usuario = result.data?.toEntity(),
                                 isLoggedIn = true
                             )
                         }
