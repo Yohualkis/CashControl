@@ -55,7 +55,8 @@ fun DashboardScreenView(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             CashControlAppBar(
-                icono = Icons.Default.Menu
+                icono = Icons.Default.Menu,
+                onActionPressed = {  },
             )
         },
     ) { innerPadding ->
