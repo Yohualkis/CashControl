@@ -5,12 +5,14 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.cashcontrol.data.local.entities.CategoriaEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 sealed interface CategoriaDao {
     @Upsert
     suspend fun save(categoria: CategoriaEntity)
+
+    @Upsert
+    suspend fun saveLista(categorias: List<CategoriaEntity>)
 
     @Query(
         """
@@ -26,5 +28,12 @@ sealed interface CategoriaDao {
     suspend fun delete(categoria: CategoriaEntity)
 
     @Query("select * from Categorias")
-    fun getAll(): Flow<List<CategoriaEntity>>
+    suspend fun getAll(): List<CategoriaEntity>
+
+    @Query("""
+        select * 
+        from Categorias
+        where tipo = :tipo and usuarioId = :usuarioId
+    """)
+    suspend fun getByTipoAndUsuarioId(tipo: String, usuarioId: Long?): List<CategoriaEntity>
 }
