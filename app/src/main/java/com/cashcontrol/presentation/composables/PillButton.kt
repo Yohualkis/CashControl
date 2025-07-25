@@ -21,19 +21,14 @@ import androidx.compose.ui.unit.dp
 fun PillButton(
     texto: String,
     estadoInicialSeleccion: Boolean = false,
-    onClick: (Boolean) -> Unit = {}
-) {
-    var estaSeleccionado by remember { mutableStateOf(estadoInicialSeleccion) }
-
+    onClick: () -> Unit = {}
+) {3
     Button(
-        onClick = {
-            estaSeleccionado = !estaSeleccionado
-            onClick(estaSeleccionado)
-        },
+        onClick = onClick,
         shape = RoundedCornerShape(50),
         colors = ButtonDefaults.buttonColors(
-            contentColor = if (estaSeleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
-            backgroundColor = if (estaSeleccionado) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+            contentColor = if (estadoInicialSeleccion) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
+            backgroundColor = if (estadoInicialSeleccion) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
         ),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp)
     ) {

@@ -7,7 +7,7 @@ data class CategoriaRequestDto(
     val categoriaId: Long?,
 
     @Json(name = "usuarioId")
-    val usuarioId: Long?,
+    val usuarioId: Long,
 
     @Json(name = "tipoCategoria")
     val tipo: String,

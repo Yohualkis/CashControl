@@ -29,7 +29,7 @@ import com.cashcontrol.R
 @Composable
 fun CashControlAppBar(
     onNavIconPressed: () -> Unit = {},
-    onActionPressed: () -> Unit = {},
+    onActionPressed: () -> Unit,
     icono: ImageVector
 ) {
     Box(
@@ -55,7 +55,7 @@ fun CashControlAppBar(
                 )
             }
 
-            IconButton(onClick = onActionPressed) {
+            IconButton(onClick = { onActionPressed }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription =  stringResource(R.string.cambiar_foto),
@@ -77,7 +77,9 @@ fun CashControlAppBar(
 fun PreviewCashControlAppBar() {
     MaterialTheme {
         CashControlAppBar(
-            icono = Icons.Default.Menu
+            icono = Icons.Default.Menu,
+            onNavIconPressed = {  },
+            onActionPressed = {},
         )
     }
 }

@@ -14,4 +14,10 @@ sealed class Screen {
 
     @Serializable
     data object Sugerencias: Screen()
+
+    @Serializable
+    data object ListaCategorias: Screen()
+
+    @Serializable
+    data class Categoria(val categoriaId: Long?): Screen()
 }
