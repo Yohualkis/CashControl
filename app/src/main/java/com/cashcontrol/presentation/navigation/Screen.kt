@@ -20,4 +20,10 @@ sealed class Screen {
 
     @Serializable
     data class Categoria(val categoriaId: Long?): Screen()
+
+    @Serializable
+    data object ListaTransacciones: Screen()
+
+    @Serializable
+    data class Transaccion(val transaccionId: Long?): Screen()
 }
