@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cambiar_foto">Cambiar foto</string>
+    <string name="formulario_categoria">Formulario categoria</string>
+    <string name="lista_categoria">Listado de categorias</string>
+    <string name="formulario_transaccion">Formulario transacción</string>
+    <string name="lista_transaccion">Listado de transacciones</string>
 </resources>
