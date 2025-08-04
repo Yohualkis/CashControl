@@ -48,7 +48,7 @@ object ApiModule {
             .build()
             .create(AutorizacionApi::class.java)
     }
-
+    
     @Provides
     @Singleton
     fun provideTransaccionApi(): TransaccionApi =
@@ -57,4 +57,5 @@ object ApiModule {
             .addConverterFactory(MoshiConverterFactory.create(provideMoshi()))
             .build()
             .create(TransaccionApi::class.java)
+
 }

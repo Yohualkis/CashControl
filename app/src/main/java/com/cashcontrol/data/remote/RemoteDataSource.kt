@@ -46,7 +46,6 @@ class RemoteDataSource @Inject constructor(
     suspend fun eliminarTransaccion(id: Long) =
         transaccionApi.deleteTransaccion(id)
 
-
     // AUTORIZACION
     suspend fun login(loginRequest: AutorizacionRequestDto) =
         autorizacionApi.login(loginRequest)

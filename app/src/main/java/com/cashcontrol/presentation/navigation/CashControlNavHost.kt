@@ -62,7 +62,6 @@ fun CashControlNavHost(
             startDestination = Screen.Login,
             modifier = Modifier.padding(innerPadding)
         ) {
-
             // LOGIN
             composable<Screen.Login> {
                 LoginScreen(

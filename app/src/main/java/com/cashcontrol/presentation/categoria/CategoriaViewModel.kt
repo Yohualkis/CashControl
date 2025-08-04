@@ -28,7 +28,7 @@ class CategoriaViewModel @Inject constructor(
     init{
         getCategoriasPorTipo("GASTOS")
     }
-
+    
     fun onEvent(event: CategoriaEvent) {
         when (event) {
             is CategoriaEvent.DescripcionChange -> onDescripcionChange(event.descripcion)
