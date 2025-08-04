@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -21,7 +20,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.automirrored.filled.Segment
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Segment
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -50,7 +48,6 @@ import com.cashcontrol.R
 import com.cashcontrol.presentation.composables.CashControlAppBar
 import com.cashcontrol.presentation.composables.MensajeDeErrorGenerico
 import com.cashcontrol.presentation.composables.TextfieldGenerico
-import okhttp3.internal.notify
 
 @Composable
 fun CategoriaScreen(
@@ -84,7 +81,8 @@ fun CategoriaFormulario(
         topBar = {
             CashControlAppBar(
                 icono = Icons.AutoMirrored.Filled.ArrowBack,
-                onActionPressed = goBack
+                goBack = { goBack() },
+                titulo = stringResource(R.string.formulario_categoria),
             )
         }
     ) { innerPadding ->
@@ -133,12 +131,14 @@ fun CategoriaFormulario(
                         )
                     },
                     shape = MaterialTheme.shapes.medium,
-                    label = { Text(
-                        text = "Tipo de categoría",
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.outline
-                    ) },
+                    label = {
+                        Text(
+                            text = "Tipo de categoría",
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    },
                     trailingIcon = {
                         TrailingIcon(expanded = expanded)
                     },
@@ -218,6 +218,7 @@ fun CategoriaFormulario(
         }
     }
 }
+
 @Preview
 @Composable
 fun PreviewCategoriaFormulario() {
