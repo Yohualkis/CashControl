@@ -22,7 +22,7 @@ fun PillButton(
     texto: String,
     estadoInicialSeleccion: Boolean = false,
     onClick: () -> Unit = {}
-) {3
+) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(50),

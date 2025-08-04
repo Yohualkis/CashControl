@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -92,7 +93,7 @@ fun ListadoTransaccion(
                 .padding(innerPadding)
         ) {
             val opciones = listOf("Gastos", "Ingresos")
-            var seleccionActual by remember { mutableStateOf(0) }
+            var seleccionActual by remember { mutableIntStateOf(0) }
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
