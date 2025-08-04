@@ -25,6 +25,10 @@ class CategoriaViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CategoriaUiState())
     val uiState = _uiState.asStateFlow()
 
+    init{
+        getCategoriasPorTipo("GASTOS")
+    }
+    
     fun onEvent(event: CategoriaEvent) {
         when (event) {
             is CategoriaEvent.DescripcionChange -> onDescripcionChange(event.descripcion)

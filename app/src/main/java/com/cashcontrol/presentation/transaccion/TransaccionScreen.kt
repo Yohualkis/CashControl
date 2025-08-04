@@ -1,4 +1,4 @@
-package com.cashcontrol.presentation.categoria
+package com.cashcontrol.presentation.transaccion
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,9 +17,10 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.automirrored.filled.Segment
+import androidx.compose.material.icons.automirrored.twotone.Article
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.twotone.Category
+import androidx.compose.material.icons.twotone.MonetizationOn
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -48,21 +49,22 @@ import com.cashcontrol.R
 import com.cashcontrol.presentation.composables.CashControlAppBar
 import com.cashcontrol.presentation.composables.MensajeDeErrorGenerico
 import com.cashcontrol.presentation.composables.TextfieldGenerico
+import com.cashcontrol.presentation.composables.TextfieldNumericoGenerico
 
 @Composable
-fun CategoriaScreen(
-    viewModel: CategoriaViewModel = hiltViewModel(),
-    categoriaId: Long?,
+fun TransaccionScreen(
+    viewModel: TransaccionViewModel = hiltViewModel(),
+    transaccionId: Long?,
     goBack: () -> Unit,
 ) {
-    LaunchedEffect(categoriaId) {
-        categoriaId?.let {
-            viewModel.selectedCategoria(categoriaId)
+    LaunchedEffect(transaccionId) {
+        transaccionId?.let {
+            viewModel.selectedTransaccion(transaccionId)
         }
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    CategoriaFormulario(
+    TransaccionFormulario(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         goBack = goBack
@@ -71,9 +73,9 @@ fun CategoriaScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriaFormulario(
-    uiState: CategoriaUiState,
-    onEvent: (CategoriaEvent) -> Unit,
+fun TransaccionFormulario(
+    uiState: TransaccionUiState,
+    onEvent: (TransaccionEvent) -> Unit,
     goBack: () -> Unit,
 ) {
     Scaffold(
@@ -82,7 +84,7 @@ fun CategoriaFormulario(
             CashControlAppBar(
                 icono = Icons.AutoMirrored.Filled.ArrowBack,
                 goBack = { goBack() },
-                titulo = stringResource(R.string.formulario_categoria),
+                titulo = stringResource(R.string.formulario_transaccion),
             )
         }
     ) { innerPadding ->
@@ -97,43 +99,58 @@ fun CategoriaFormulario(
                     indication = null
                 ) { focusManager.clearFocus() }
         ) {
-            var tipoSeleccionado by remember { mutableStateOf("") }
             var expanded by remember { mutableStateOf(false) }
-            val tiposCategoria = listOf("GASTOS", "INGRESOS")
+
+            // CAMPO MONTO
+            TextfieldNumericoGenerico(
+                value = uiState.monto?.takeIf { it > 0.0 }?.toString() ?: "",
+                onValueChange = {
+                    onEvent(TransaccionEvent.MontoChange(it.toDouble()))
+                },
+                labelResource = R.string.campo_monto,
+                icono = Icons.TwoTone.MonetizationOn,
+                errorMessagePass = uiState.errorMonto,
+            )
+            MensajeDeErrorGenerico(uiState.errorMonto)
 
             // CAMPO DESCRIPCION
             TextfieldGenerico(
-                value = uiState.descripcion ?: "",
+                value = uiState.descripcionTransaccion ?: "",
                 onValueChange = {
-                    onEvent(CategoriaEvent.DescripcionChange(it))
+                    onEvent(TransaccionEvent.DescripcionTransaccionChange(it))
                 },
                 labelResource = R.string.campo_descripcion,
-                icono = Icons.AutoMirrored.Filled.Article,
-                errorMessagePass = uiState.errorDescripcion
+                icono = Icons.AutoMirrored.TwoTone.Article,
+                errorMessagePass = uiState.errorDescripcionTransaccion
             )
-            MensajeDeErrorGenerico(uiState.errorDescripcion)
+            MensajeDeErrorGenerico(uiState.errorDescripcionTransaccion)
 
-            // CAMPO TIPO DE CATEGORIA
+            // CAMPO CATEGORIA
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
             ) {
                 OutlinedTextField(
                     readOnly = true,
-                    value = if (uiState.tipoCategoria.isNullOrBlank()) "" else uiState.tipoCategoria,
+                    value = uiState.descripcionCategoria ?: "",
                     onValueChange = {
-                        onEvent(CategoriaEvent.TipoCategoriaChange(it))
+                        onEvent(
+                            TransaccionEvent.CategoriaChange(
+                                it.toLong(),
+                                uiState.descripcionCategoria ?: ""
+                            )
+                        )
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Segment,
+                            imageVector = Icons.TwoTone.Category,
                             contentDescription = ""
                         )
                     },
                     shape = MaterialTheme.shapes.medium,
                     label = {
                         Text(
-                            text = "Tipo de categoría",
+                            text = "Categoría",
                             fontWeight = FontWeight.Normal,
                             fontSize = 16.sp,
                             color = MaterialTheme.colorScheme.outline
@@ -159,7 +176,7 @@ fun CategoriaFormulario(
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
-                    isError = !uiState.errorTipoCategoria.isNullOrBlank(),
+                    isError = !uiState.errorCategoria.isNullOrBlank(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor()
@@ -169,25 +186,31 @@ fun CategoriaFormulario(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    tiposCategoria.forEach { tipo ->
+                    uiState.listaAllCategorias.forEach { cat ->
                         DropdownMenuItem(
-                            text = { Text(tipo) },
+                            text = { Text(cat.descripcion + " (${cat.tipo})") },
                             onClick = {
-                                onEvent(CategoriaEvent.TipoCategoriaChange(tipo))
+                                onEvent(
+                                    TransaccionEvent.CategoriaChange(
+                                        cat.categoriaId,
+                                        cat.descripcion
+                                    )
+                                )
                                 expanded = false
                             }
                         )
                     }
                 }
             }
-            MensajeDeErrorGenerico(uiState.errorTipoCategoria)
+            MensajeDeErrorGenerico(uiState.errorCategoria)
+
             Spacer(modifier = Modifier.height(8.dp))
 
             // BTN GUARDAR
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    onEvent(CategoriaEvent.Save)
+                    onEvent(TransaccionEvent.Save)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -221,9 +244,9 @@ fun CategoriaFormulario(
 
 @Preview
 @Composable
-fun PreviewCategoriaFormulario() {
-    CategoriaFormulario(
-        uiState = CategoriaUiState(),
+fun PreviewTransaccionFormulario() {
+    TransaccionFormulario(
+        uiState = TransaccionUiState(),
         onEvent = {},
         goBack = {}
     )

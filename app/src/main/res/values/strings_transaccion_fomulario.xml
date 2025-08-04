@@ -1,0 +1,4 @@
+<resources>
+    <string name="campo_monto">Monto</string>
+    <string name="campo_categoria">Categoría</string>
+</resources>

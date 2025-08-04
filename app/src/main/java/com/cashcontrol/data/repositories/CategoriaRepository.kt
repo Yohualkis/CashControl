@@ -101,7 +101,9 @@ class CategoriaRepository @Inject constructor(
             }
         }
     }
-
+    
+    suspend fun getAll() = categoriaDao.getAll()
+    
     suspend fun findCategoria(id: Long) = categoriaDao.find(id)
 
     fun getCategoriasPorTipoYUsuario(tipo: String): Flow<Resource<List<CategoriaResponseDto>>> {

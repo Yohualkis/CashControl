@@ -78,7 +78,7 @@ private fun getBottomNavItems(): List<BottomNavItem> = listOf(
         icono = Icons.TwoTone.Dashboard
     ),
     BottomNavItem(
-        screen = Screen.ListaCategorias,
+        screen = Screen.ListaTransacciones,
         titulo = "Tras.",
         icono = Icons.TwoTone.Payments
     ),

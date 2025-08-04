@@ -25,13 +25,10 @@ import java.util.Date
 data class TransaccionEntity(
     @PrimaryKey
     val transaccionId: Long?,
-    val usuarioId: Long?,
-    val categoriaId: Long?,
-    val tipoTransaccion: String,
+    val usuarioId: Long,
+    val categoriaId: Long,
     val monto: Double,
-    val fechaTransaccion: Date?,
+    val fechaTransaccion: Date,
     val usarSugerencia: Boolean,
     val descripcion: String,
-    val updatedAt: Long, // timestamp Unix ms de ultima actualizacion
-    val isDirty: Boolean = false // true si esta modificado localmente y no sincronizado
 )

@@ -28,9 +28,10 @@ import com.cashcontrol.R
 
 @Composable
 fun CashControlAppBar(
-    onNavIconPressed: () -> Unit = {},
-    onActionPressed: () -> Unit,
-    icono: ImageVector
+    goBack: () -> Unit ,
+    onActionClick: () -> Unit = {},
+    icono: ImageVector,
+    titulo: String,
 ) {
     Box(
         modifier = Modifier
@@ -47,25 +48,29 @@ fun CashControlAppBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = onNavIconPressed) {
+            IconButton(
+                onClick = { goBack() }
+            ) {
                 Icon(
                     imageVector = icono,
-                    contentDescription = "Menu",
+                    contentDescription = "",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
-            IconButton(onClick = { onActionPressed }) {
+            IconButton(
+                onClick = { onActionClick() }
+            ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription =  stringResource(R.string.cambiar_foto),
+                    contentDescription = stringResource(R.string.cambiar_foto),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
 
         Text(
-            text = stringResource(R.string.app_name_),
+            text = titulo,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -78,8 +83,9 @@ fun PreviewCashControlAppBar() {
     MaterialTheme {
         CashControlAppBar(
             icono = Icons.Default.Menu,
-            onNavIconPressed = {  },
-            onActionPressed = {},
+            goBack = { },
+            onActionClick = {},
+            titulo = "Cash Control",
         )
     }
 }

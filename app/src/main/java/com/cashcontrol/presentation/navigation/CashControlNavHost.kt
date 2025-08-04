@@ -17,6 +17,10 @@ import com.cashcontrol.presentation.categoria.CategoriaListScreen
 import com.cashcontrol.presentation.categoria.CategoriaScreen
 import com.cashcontrol.presentation.composables.AppBottomBar
 import com.cashcontrol.presentation.dashboard.DashboardScreen
+import com.cashcontrol.presentation.navigation.Screen
+import com.cashcontrol.presentation.transaccion.ListadoTransaccion
+import com.cashcontrol.presentation.transaccion.TransaccionListScreen
+import com.cashcontrol.presentation.transaccion.TransaccionScreen
 
 @Composable
 fun CashControlNavHost(
@@ -27,6 +31,7 @@ fun CashControlNavHost(
             when (nav.currentDestination?.route?.substringBefore("/")) {
                 "dashboard" -> Screen.Dashboard
                 "categorias" -> Screen.ListaCategorias
+                "transacciones" -> Screen.ListaTransacciones
                 "sugerencias" -> Screen.Sugerencias
                 else -> Screen.Dashboard
             }
@@ -42,6 +47,7 @@ fun CashControlNavHost(
                     onNavigate = { screen ->
                         when (screen) {
                             is Screen.Dashboard -> nav.navigate(Screen.Dashboard)
+                            is Screen.ListaTransacciones -> nav.navigate(Screen.ListaTransacciones)
                             is Screen.ListaCategorias -> nav.navigate(Screen.ListaCategorias)
                             is Screen.Sugerencias -> nav.navigate(Screen.Sugerencias)
                             else -> {}
@@ -56,7 +62,6 @@ fun CashControlNavHost(
             startDestination = Screen.Login,
             modifier = Modifier.padding(innerPadding)
         ) {
-
             // LOGIN
             composable<Screen.Login> {
                 LoginScreen(
@@ -92,7 +97,7 @@ fun CashControlNavHost(
                 )
             }
 
-            // LISTA DE CATEGORIAS
+            // CATEGORIAS
             composable<Screen.ListaCategorias> {
                 CategoriaListScreen(
                     goToCategoria = { nav.navigate(Screen.Categoria(it)) },
@@ -100,11 +105,26 @@ fun CashControlNavHost(
                 )
             }
 
-            // CATEGORIA
             composable<Screen.Categoria> { backStack ->
                 val args = backStack.toRoute<Screen.Categoria>()
                 CategoriaScreen(
                     categoriaId = args.categoriaId,
+                    goBack = { nav.navigateUp() },
+                )
+            }
+            
+            // TRANSACCIONES
+            composable<Screen.ListaTransacciones> {
+                TransaccionListScreen(
+                    goToTransaccion = { nav.navigate(Screen.Transaccion(it)) },
+                    goBack = { nav.navigateUp() },
+                )
+            }
+
+            composable<Screen.Transaccion> { backStack ->
+                val args = backStack.toRoute<Screen.Transaccion>()
+                TransaccionScreen(
+                    transaccionId = args.transaccionId,
                     goBack = { nav.navigateUp() },
                 )
             }
