@@ -24,8 +24,10 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cashcontrol.R
 import com.cashcontrol.presentation.composables.CashControlAppBar
 import com.cashcontrol.presentation.composables.CashControlCardSugerencia
 import com.cashcontrol.presentation.composables.GraficoCurvas
@@ -56,7 +58,8 @@ fun DashboardScreenView(
         topBar = {
             CashControlAppBar(
                 icono = Icons.Default.Menu,
-                onActionPressed = {  },
+                goBack = { },
+                titulo = stringResource(R.string.app_name_),
             )
         },
     ) { innerPadding ->
