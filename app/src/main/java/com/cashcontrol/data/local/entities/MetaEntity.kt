@@ -17,8 +17,9 @@ import androidx.room.PrimaryKey
 )
 data class MetaEntity(
     @PrimaryKey
-    val metaId: Long?,
-    val usuarioId: Long?,
+    val metaId: Long = 0,
+    val usuarioId: Long = 0,
+    val fotoPath: String,
     val descripcion: String,
     val montoMeta: Double,
 )
