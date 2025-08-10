@@ -19,11 +19,15 @@ class RegisterViewModel @Inject constructor(
     private val autorizacionRepository: AutorizacionRepository,
 ) : ViewModel() {
 
+    companion object {
+        private const val REQUIRED_FIELD = "Este campo es obligatorio *"
+    }
+
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onEvent(event: RegisterEvent){
-        when(event){
+    fun onEvent(event: RegisterEvent) {
+        when (event) {
             is RegisterEvent.NombreChange -> onNombreChange(event.nombre)
             is RegisterEvent.EmailChange -> onEmailChange(event.email)
             is RegisterEvent.PasswordChange -> onPasswordChange(event.password)
@@ -37,7 +41,7 @@ class RegisterViewModel @Inject constructor(
 
     private fun onRegister() {
         viewModelScope.launch {
-            if(errorRegister())
+            if (errorRegister())
                 return@launch
 
             autorizacionRepository.register(
@@ -49,7 +53,7 @@ class RegisterViewModel @Inject constructor(
                     fotoPath = null,
                 )
             ).collectLatest { result ->
-                when(result){
+                when (result) {
                     is Resource.Error -> {
                         _uiState.update {
                             it.copy(
@@ -97,7 +101,7 @@ class RegisterViewModel @Inject constructor(
 
         if (_uiState.value.nombre.isNullOrBlank()) {
             _uiState.update {
-                it.copy(errorNombre = "Este campo es obligatorio *")
+                it.copy(errorNombre = REQUIRED_FIELD)
             }
             hasErrors = true
         } else if (_uiState.value.nombre!!.length < 3) {
@@ -109,7 +113,7 @@ class RegisterViewModel @Inject constructor(
 
         if (_uiState.value.email.isNullOrBlank()) {
             _uiState.update {
-                it.copy(errorEmail = "Este campo es obligatorio *")
+                it.copy(errorEmail = REQUIRED_FIELD)
             }
             hasErrors = true
         } else if (!Patterns.EMAIL_ADDRESS.matcher(_uiState.value.email!!).matches()) {
@@ -121,7 +125,7 @@ class RegisterViewModel @Inject constructor(
 
         if (_uiState.value.password.isNullOrBlank()) {
             _uiState.update {
-                it.copy(errorPassword = "Este campo es obligatorio *")
+                it.copy(errorPassword = REQUIRED_FIELD)
             }
             hasErrors = true
         } else if (_uiState.value.password!!.length < 8) {
@@ -133,7 +137,7 @@ class RegisterViewModel @Inject constructor(
 
         if (_uiState.value.confirmPassword.isNullOrBlank()) {
             _uiState.update {
-                it.copy(errorConfirmPassword = "Este campo es obligatorio *")
+                it.copy(errorConfirmPassword = REQUIRED_FIELD)
             }
             hasErrors = true
         } else if (_uiState.value.password != _uiState.value.confirmPassword) {
@@ -160,8 +164,8 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onConfirmPasswordChange(pass: String) {
-        viewModelScope.launch { 
-            _uiState.update { 
+        viewModelScope.launch {
+            _uiState.update {
                 it.copy(
                     confirmPassword = pass,
                     errorConfirmPassword = ""
@@ -171,8 +175,8 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onPasswordChange(pass: String) {
-        viewModelScope.launch { 
-            _uiState.update { 
+        viewModelScope.launch {
+            _uiState.update {
                 it.copy(
                     password = pass,
                     errorPassword = ""
@@ -182,8 +186,8 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onEmailChange(email: String) {
-        viewModelScope.launch { 
-            _uiState.update { 
+        viewModelScope.launch {
+            _uiState.update {
                 it.copy(
                     email = email,
                     errorEmail = ""
@@ -193,8 +197,8 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onNombreChange(nombre: String) {
-        viewModelScope.launch { 
-            _uiState.update { 
+        viewModelScope.launch {
+            _uiState.update {
                 it.copy(
                     nombre = nombre,
                     errorNombre = ""

@@ -20,6 +20,14 @@ class TransaccionRepository @Inject constructor(
     private val catRepo: CategoriaRepository,
     private val remote: RemoteDataSource,
 ) {
+    companion object{
+        private const val DESCRIPCION_OCUPADA = "Esta decripción esta ocupada *"
+        private const val ERROR_CONEXION = "Error de conexión"
+        private const val ERROR_DESCONOCIDO = "Error inesperado"
+        private const val ERROR_ELIMINAR = "Error al eliminar"
+        private const val ERROR_CATEGORIAS_NOTFOUND = "Categorías no encontradas"
+    }
+
     fun saveTransaccion(requestDto: TransaccionRequestDto): Flow<Resource<TransaccionResponseDto>> {
         return flow {
             emit(Resource.Loading())
@@ -32,7 +40,7 @@ class TransaccionRepository @Inject constructor(
                 if (tran.descripcion == requestDto.descripcion &&
                     tran.transaccionId != requestDto.transaccionId
                 ) {
-                    emit(Resource.Error("Esta descripción está ocupada *"))
+                    emit(Resource.Error(DESCRIPCION_OCUPADA))
                     return@flow
                 }
             }
@@ -49,7 +57,7 @@ class TransaccionRepository @Inject constructor(
                     if (tran.descripcion == requestDto.descripcion &&
                         tran.transaccionId != requestDto.transaccionId
                     ) {
-                        emit(Resource.Error("Esta descripción está ocupada *"))
+                        emit(Resource.Error(DESCRIPCION_OCUPADA))
                         return@flow
                     }
                 }
@@ -62,9 +70,9 @@ class TransaccionRepository @Inject constructor(
 
                 transaccionDao.save(transaccionResponse.toEntity())
             } catch (e: IOException) {
-                emit(Resource.Error("Error de conexión"))
+                emit(Resource.Error(ERROR_CONEXION))
             } catch (e: Exception) {
-                emit(Resource.Error("Error inesperado"))
+                emit(Resource.Error(ERROR_DESCONOCIDO))
             }
         }
     }
@@ -76,16 +84,16 @@ class TransaccionRepository @Inject constructor(
             try {
                 val response = remote.eliminarTransaccion(transaccionId)
                 if (response != true) {
-                    emit(Resource.Error("Error al eliminar"))
+                    emit(Resource.Error(ERROR_ELIMINAR))
                     return@flow
                 }
                 transaccionLocal = transaccionDao.find(transaccionId)
                 transaccionDao.delete(transaccionLocal!!)
                 emit(Resource.Success(response))
             } catch (e: HttpException) {
-                emit(Resource.Error("Error al eliminar"))
+                emit(Resource.Error(ERROR_ELIMINAR))
             } catch (e: Exception) {
-                emit(Resource.Error("Error de conexión"))
+                emit(Resource.Error(ERROR_CONEXION))
             }
         }
     }
@@ -111,9 +119,9 @@ class TransaccionRepository @Inject constructor(
                 }
                 transaccionDao.saveLista(listaLocal)
             } catch (e: HttpException) {
-                emit(Resource.Error("Categorías no encontradas"))
+                emit(Resource.Error(ERROR_CATEGORIAS_NOTFOUND))
             } catch (e: Exception) {
-                emit(Resource.Error("Error de conexión"))
+                emit(Resource.Error(ERROR_CONEXION))
             }
 
             listaLocal =

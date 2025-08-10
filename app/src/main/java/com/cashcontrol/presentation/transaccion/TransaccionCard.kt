@@ -170,7 +170,7 @@ fun TransaccionCard(
                     ) {
                         Icon(
                             imageVector = Icons.TwoTone.Edit,
-                            contentDescription = "Usar en sugerencia",
+                            contentDescription = "Edit",
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(26.dp)
                         )
@@ -182,7 +182,7 @@ fun TransaccionCard(
                     ) {
                         Icon(
                             imageVector = Icons.TwoTone.Delete,
-                            contentDescription = "Usar en sugerencia",
+                            contentDescription = "Delete",
                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(26.dp)
                         )
