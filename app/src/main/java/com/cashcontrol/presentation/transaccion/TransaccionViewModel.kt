@@ -23,6 +23,11 @@ class TransaccionViewModel @Inject constructor(
     private val catRepo: CategoriaRepository,
     private val authRepo: AutorizacionRepository,
 ) : ViewModel() {
+
+    companion object {
+        private const val REQUIRED_FIELD = "Este campo es obligatorio *"
+    }
+
     private val _uiState = MutableStateFlow(TransaccionUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -46,6 +51,7 @@ class TransaccionViewModel @Inject constructor(
                 getTransacciones(event.tipoCategoria)
                 getAllCategorias()
             }
+
             is TransaccionEvent.Delete -> onDelete(event.transaccion)
             TransaccionEvent.Save -> onSave()
             TransaccionEvent.Limpiar -> onLimpiar()
@@ -147,7 +153,7 @@ class TransaccionViewModel @Inject constructor(
         _uiState.value.monto?.let {
             if (it <= 0.0) {
                 _uiState.update {
-                    it.copy(errorMonto = "Este no puede ser menor a cero *")
+                    it.copy(errorMonto = "Este campo debe ser mayor a cero *")
                 }
                 errorEncontrado = true
             }
@@ -155,10 +161,10 @@ class TransaccionViewModel @Inject constructor(
 
         if (_uiState.value.descripcionTransaccion.isNullOrBlank()) {
             _uiState.update {
-                it.copy(errorDescripcionTransaccion = "Este campo es obligatorio *")
+                it.copy(errorDescripcionTransaccion = REQUIRED_FIELD)
             }
             errorEncontrado = true
-        } else if (_uiState.value.descripcionTransaccion!!.length > 24){
+        } else if (_uiState.value.descripcionTransaccion!!.length > 24) {
             _uiState.update {
                 it.copy(errorDescripcionTransaccion = "Este campo no puede contener más de 24 caracteres *")
             }
@@ -166,12 +172,12 @@ class TransaccionViewModel @Inject constructor(
 
         if (_uiState.value.descripcionCategoria.isNullOrBlank()) {
             _uiState.update {
-                it.copy(errorCategoria = "Este campo es obligatorio *")
+                it.copy(errorCategoria = REQUIRED_FIELD)
             }
             errorEncontrado = true
-        } else if (_uiState.value.categoriaId == null){
+        } else if (_uiState.value.categoriaId == null) {
             _uiState.update {
-                it.copy(errorCategoria = "Este campo es obligatorio *")
+                it.copy(errorCategoria = REQUIRED_FIELD)
             }
             errorEncontrado = true
         }
@@ -182,7 +188,7 @@ class TransaccionViewModel @Inject constructor(
     private fun onSave() {
         viewModelScope.launch {
             onLimpiar()
-            if(errorCampos())
+            if (errorCampos())
                 return@launch
 
             transRepo.saveTransaccion(

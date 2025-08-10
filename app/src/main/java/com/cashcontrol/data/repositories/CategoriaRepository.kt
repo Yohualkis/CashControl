@@ -20,7 +20,13 @@ class CategoriaRepository @Inject constructor(
     private val categoriaDao: CategoriaDao,
     private val authRepo: AutorizacionRepository,
 ) {
-    private val errorDescripcionOcupada = "Esta descripción está ocupada *"
+    companion object{
+        private const val DESCRIPCION_OCUPADA = "Esta decripción esta ocupada *"
+        private const val ERROR_CONEXION = "Error de conexión"
+        private const val ERROR_DESCONOCIDO = "Error inesperado"
+        private const val ERROR_ELIMINAR = "Error al eliminar"
+        private const val ERROR_CATEGORIAS_NOTFOUND = "Categorías no encontradas"
+    }
 
     fun saveCategoria(requestDto: CategoriaRequestDto): Flow<Resource<CategoriaResponseDto>> {
         return flow {
@@ -34,7 +40,7 @@ class CategoriaRepository @Inject constructor(
                             it.tipo == requestDto.tipo &&
                             it.categoriaId != requestDto.categoriaId
                 }?.let {
-                    emit(Resource.Error(errorDescripcionOcupada))
+                    emit(Resource.Error(DESCRIPCION_OCUPADA))
                     return@flow
                 }
 
@@ -49,7 +55,7 @@ class CategoriaRepository @Inject constructor(
                             it.tipo == requestDto.tipo &&
                             it.categoriaId != requestDto.categoriaId
                 }?.let {
-                    emit(Resource.Error(errorDescripcionOcupada))
+                    emit(Resource.Error(DESCRIPCION_OCUPADA))
                     return@flow
                 }
 
@@ -61,11 +67,11 @@ class CategoriaRepository @Inject constructor(
                 categoriaLocal = categoriaResponse.toEntity(requestDto.usuarioId)
                 categoriaDao.save(categoriaLocal)
             } catch (e: HttpException) {
-                emit(Resource.Error(errorDescripcionOcupada))
+                emit(Resource.Error(DESCRIPCION_OCUPADA))
             } catch (e: IOException) {
-                emit(Resource.Error("Error de conexión"))
+                emit(Resource.Error(ERROR_CONEXION))
             } catch (e: Exception) {
-                emit(Resource.Error("Error inesperado"))
+                emit(Resource.Error(ERROR_DESCONOCIDO))
             }
 
             val categoriaEntityRetornada = categoriaDao.find(requestDto.categoriaId)?.toResponse()
@@ -81,16 +87,16 @@ class CategoriaRepository @Inject constructor(
             try {
                 val response = remote.eliminarCategoria(categoriaId)
                 if (response == true) {
-                    emit(Resource.Error("Error al eliminar"))
+                    emit(Resource.Error(ERROR_ELIMINAR))
                     return@flow
                 }
                 categoriaLocal = categoriaDao.find(categoriaId)
                 categoriaDao.delete(categoriaLocal!!)
                 emit(Resource.Success(response))
             } catch (e: HttpException) {
-                emit(Resource.Error("Error al eliminar"))
+                emit(Resource.Error(ERROR_ELIMINAR))
             } catch (e: Exception) {
-                emit(Resource.Error("Error de conexión"))
+                emit(Resource.Error(ERROR_CONEXION))
             }
         }
     }
@@ -117,9 +123,9 @@ class CategoriaRepository @Inject constructor(
                 }
                 categoriaDao.saveLista(listaLocal)
             } catch (e: HttpException) {
-                emit(Resource.Error("Categorías no encontradas"))
+                emit(Resource.Error(ERROR_CATEGORIAS_NOTFOUND))
             } catch (e: Exception) {
-                emit(Resource.Error("Error de conexión"))
+                emit(Resource.Error(ERROR_CONEXION))
             }
 
             listaLocal = categoriaDao.getByTipoAndUsuarioId(tipoCategoria, user?.usuarioId)
