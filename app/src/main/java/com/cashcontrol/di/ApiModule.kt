@@ -5,8 +5,7 @@ import com.cashcontrol.data.remote.api.CategoriaApi
 import com.cashcontrol.data.remote.api.TransaccionApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dagger.Module
-import dagger.Provides
+import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
