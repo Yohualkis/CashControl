@@ -17,8 +17,6 @@ import com.cashcontrol.presentation.categoria.CategoriaListScreen
 import com.cashcontrol.presentation.categoria.CategoriaScreen
 import com.cashcontrol.presentation.composables.AppBottomBar
 import com.cashcontrol.presentation.dashboard.DashboardScreen
-import com.cashcontrol.presentation.navigation.Screen
-import com.cashcontrol.presentation.transaccion.ListadoTransaccion
 import com.cashcontrol.presentation.transaccion.TransaccionListScreen
 import com.cashcontrol.presentation.transaccion.TransaccionScreen
 
