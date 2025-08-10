@@ -88,6 +88,7 @@ class CategoriaRepository @Inject constructor(
                 categoriaDao.find(categoriaId)?.let {
                     categoriaDao.delete(it)
                     emit(Resource.Success(response))
+                    return@flow
                 }
                 emit(Resource.Error(ERROR_ELIMINAR))
             } catch (e: HttpException) {
