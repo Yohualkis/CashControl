@@ -83,16 +83,13 @@ class CategoriaRepository @Inject constructor(
     fun eliminarCategoria(categoriaId: Long?): Flow<Resource<Boolean>> {
         return flow {
             emit(Resource.Loading())
-            var categoriaLocal: CategoriaEntity? = null
             try {
                 val response = remote.eliminarCategoria(categoriaId)
-                if (response == true) {
-                    emit(Resource.Error(ERROR_ELIMINAR))
-                    return@flow
+                categoriaDao.find(categoriaId)?.let {
+                    categoriaDao.delete(it)
+                    emit(Resource.Success(response))
                 }
-                categoriaLocal = categoriaDao.find(categoriaId)
-                categoriaDao.delete(categoriaLocal!!)
-                emit(Resource.Success(response))
+                emit(Resource.Error(ERROR_ELIMINAR))
             } catch (e: HttpException) {
                 emit(Resource.Error(ERROR_ELIMINAR))
             } catch (e: Exception) {
