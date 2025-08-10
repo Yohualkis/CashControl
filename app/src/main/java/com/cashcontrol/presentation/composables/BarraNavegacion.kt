@@ -6,7 +6,6 @@ import androidx.compose.material.icons.twotone.Dashboard
 import androidx.compose.material.icons.twotone.Lightbulb
 import androidx.compose.material.icons.twotone.Payments
 import androidx.compose.material.icons.twotone.Savings
-import androidx.compose.material.icons.twotone.SportsScore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar

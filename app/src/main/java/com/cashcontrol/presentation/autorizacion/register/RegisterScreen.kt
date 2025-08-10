@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashcontrol.R
-import com.cashcontrol.presentation.autorizacion.login.LoginEvent
 import com.cashcontrol.presentation.composables.MensajeDeErrorGenerico
 import com.cashcontrol.presentation.composables.TextfieldGenerico
 import com.cashcontrol.presentation.composables.TextfieldPassword
