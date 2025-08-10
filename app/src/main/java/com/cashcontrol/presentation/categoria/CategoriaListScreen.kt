@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -44,7 +45,7 @@ fun CategoriaListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ListadoCategoria(
         uiState = uiState,
-        goBack = { goBack },
+        goBack = goBack,
         goToCategoria = { goToCategoria(it) },
         onDeleteClick = { viewModel.onEvent(CategoriaEvent.Delete(it)) },
         verTiposCategoria = { viewModel.getCategoriasPorTipo(it) },
